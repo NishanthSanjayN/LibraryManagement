@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Grand Central Library - Edit Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f7f7f7; }
+    </style>
+</head>
+<body>
+
+    <header class="bg-gray-800 text-white shadow-lg sticky top-0 z-10">
+        <div class="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 11-2 0V4zM16 5a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                </svg>
+                <a th:href="@{/}" class="text-2xl font-bold hover:text-yellow-400 transition duration-150">The Grand Central Library</a>
+            </div>
+            <nav class="flex flex-wrap space-x-2 md:space-x-4 mt-3 md:mt-0">
+                <a th:href="@{/}" class="text-gray-300 hover:bg-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition duration-150">Home</a>
+                <a th:href="@{/books}" class="bg-yellow-500 text-gray-900 hover:bg-yellow-400 px-3 py-2 rounded-lg text-sm font-medium transition duration-150 shadow-md">Book Management</a>
+                <a th:href="@{/members}" class="text-gray-300 hover:bg-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition duration-150">Member Management</a>
+                <a th:href="@{/issues}" class="text-gray-300 hover:bg-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition duration-150">Transaction Management</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="flex justify-center items-start min-h-screen py-10">
+        <div class="w-full max-w-lg bg-white p-8 rounded-xl shadow-2xl border border-gray-100">
+            
+            <h2 class="text-3xl font-extrabold text-gray-800 mb-6 text-center">Edit Book Details</h2>
+            
+            <form th:action="@{/update/{id}(id=${book.id})}" th:object="${book}" method="post" class="space-y-6">
+                
+                <input type="hidden" th:field="*{id}">
+                
+                <div class="flex flex-col">
+                    <label for="title" class="text-sm font-medium text-gray-700 mb-1">Title:</label>
+                    <input type="text" th:field="*{title}" id="title" required
+                           class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                </div>
+                
+                <div class="flex flex-col">
+                    <label for="author" class="text-sm font-medium text-gray-700 mb-1">Author:</label>
+                    <input type="text" th:field="*{author}" id="author" required
+                           class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                </div>
+                
+                <div class="flex flex-col">
+                    <label for="isbn" class="text-sm font-medium text-gray-700 mb-1">ISBN:</label>
+                    <input type="text" th:field="*{isbn}" id="isbn" required
+                           class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                </div>
+                
+                <div class="flex flex-col">
+                    <label for="quantity" class="text-sm font-medium text-gray-700 mb-1">Quantity:</label>
+                    <input type="number" th:field="*{quantity}" id="quantity" required min="1"
+                           class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                </div>
+                
+                <div class="flex justify-between items-center pt-4">
+                    <a th:href="@{/books}" class="text-gray-600 hover:text-gray-900 text-sm font-medium transition duration-150">
+                        &larr; Cancel and Back
+                    </a>
+                    <button type="submit" 
+                            class="px-6 py-3 text-white bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 font-semibold">
+                        Update Book Details
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</body>
+</html>

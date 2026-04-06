@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Grand Central Library - Issued Books</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f7f7f7; }
+    </style>
+</head>
+<body>
+
+    <header class="bg-gray-800 text-white shadow-lg sticky top-0 z-10">
+        <div class="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 11-2 0V4zM16 5a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                </svg>
+                <a th:href="@{/}" class="text-2xl font-bold hover:text-yellow-400 transition duration-150">The Grand Central Library</a>
+            </div>
+            <nav class="flex flex-wrap space-x-2 md:space-x-4 mt-3 md:mt-0">
+                <a th:href="@{/}" class="text-gray-300 hover:bg-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition duration-150">Home</a>
+                <a th:href="@{/books}" class="text-gray-300 hover:bg-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition duration-150">Book Management</a>
+                <a th:href="@{/members}" class="text-gray-300 hover:bg-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition duration-150">Member Management</a>
+                <a th:href="@{/issues}" class="bg-yellow-500 text-gray-900 hover:bg-yellow-400 px-3 py-2 rounded-lg text-sm font-medium transition duration-150 shadow-md">Transaction Management</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <h2 class="text-3xl font-extrabold text-gray-800 mb-6">Current Issued Books</h2>
+
+        <div th:if="${successMessage}" class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert" th:text="${successMessage}">Success!</div>
+        <div th:if="${errorMessage}" class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg" role="alert" th:text="${errorMessage}">Error!</div>
+
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
+            <a th:href="@{/issues/issue}" class="w-full md:w-auto px-6 py-3 text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 transition duration-150 flex items-center justify-center font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M11 3a1 1 0 100 2h3a1 1 0 100-2h-3z" />
+                    <path fill-rule="evenodd" d="M4 11a1 1 0 011-1h10a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1v-5zm4-4a3 3 0 10-6 0h12a3 3 0 10-6 0z" clip-rule="evenodd" />
+                </svg>
+                Issue New Book
+            </a>
+
+            <form th:action="@{/issues}" method="get" class="w-full md:w-auto flex space-x-2">
+                <input type="text" name="keyword" th:value="${keyword}" 
+                       placeholder="Search by Title or Member Name..." 
+                       class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm">
+                <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition duration-150">Search</button>
+                <a th:href="@{/issues}" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition duration-150 flex items-center">Clear</a>
+            </form>
+            </div>
+
+        <div th:if="${issues.empty}" class="p-6 bg-white border border-gray-200 rounded-xl shadow-lg text-center">
+            <p class="text-gray-600">
+                <span th:if="${keyword != null and !keyword.isEmpty()}">
+                    No issued transactions found matching the search term: <strong class="text-gray-800" th:text="${keyword}"></strong>.
+                </span>
+                <span th:unless="${keyword != null and !keyword.isEmpty()}">
+                    No books are currently issued.
+                </span>
+            </p>
+        </div>
+
+        <div th:unless="${issues.empty}" class="overflow-x-auto bg-white rounded-xl shadow-lg">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Book Title</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issued To</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issue Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr th:each="issue : ${issues}" class="hover:bg-yellow-50 transition duration-100">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${issue.id}">1</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold" th:text="${issue.book.title}">The Great Gatsby</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700" th:text="${issue.member.name}">Jane Doe</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${issue.issueDate}">2025-10-01</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-500 font-medium" th:text="${issue.dueDate}">2025-10-15</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span th:text="${issue.status}" 
+                                    th:classappend="${issue.status == 'ISSUED' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}" 
+                                    class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full">ISSUED</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a th:if="${issue.status == 'ISSUED'}" th:href="@{/issues/return/{id}(id=${issue.id})}" 
+                               class="text-amber-600 hover:text-amber-900 p-2 rounded-md hover:bg-amber-50 transition duration-150"
+                               onclick="return confirm('Confirm book return?');">Return</a>
+                            <span th:unless="${issue.status == 'ISSUED'}" class="text-gray-400">N/A</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
